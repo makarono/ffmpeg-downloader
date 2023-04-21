@@ -1,7 +1,7 @@
 # FFMPEG Downloader
 Download static binary build of ffmpeg and ffprobe for use in docker , aws lambda layer, cloud.
 This is a bash script that downloads and extracts the FFMPEG static binaries for a specified version and architecture built by John Van Sickle (http://johnvansickle.com/ffmpeg/).
-Once the script downloads and extracts the tar file to donload directory it deletes downladed tar archive file.
+Once the script downloads and extracts the tar file to download directory it deletes downladed tar archive file.
 
 ## Requirements
 
