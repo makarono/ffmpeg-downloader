@@ -38,6 +38,12 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+#fetches latest release version from website
+function get_version_from_latest_release() {
+  lv=$(curl -s https://johnvansickle.com/ffmpeg/ | grep -Eo 'release: [0-9]{1,3}+(\.[0-9]{1,3}+)*')
+  echo "${lv}" | sed 's/release: //g'
+}
+
 function check_installed() {
   local program="${1}"
   if which $program >/dev/null; then
@@ -100,7 +106,19 @@ release)
   ;;
 [0-9.]*)
   echo "Downloading specific FFMPEG version: $FFMPEG_VERSION for architecture: $FFMPEG_ARCHITECTURE to directory: $DOWNLOAD_DIR"
+  LATEST_RELEASE_VERSION=$(get_version_from_latest_release)
   DOWNLOAD_URL="https://www.johnvansickle.com/ffmpeg/old-releases/ffmpeg-${FFMPEG_VERSION}-${FFMPEG_ARCHITECTURE}-static.tar.xz"
+  #compares version from argument and latest release version from website
+  if [ "${FFMPEG_VERSION}" == "${LATEST_RELEASE_VERSION}" ]; then
+    echo "downloading latest release version"
+    DOWNLOAD_URL="https://johnvansickle.com/ffmpeg/releases/ffmpeg-${FFMPEG_VERSION}-${FFMPEG_ARCHITECTURE}-static.tar.xz"
+  fi
+  ;;
+help)
+  echo "download latest version for amd64: $0" >&2
+  echo "download specific version: $0 5.1.1" >&2
+  echo "download specific version and architecture: $0 5.1.1 arm64 or $0 5.1.1 amd64" >&2
+  exit 1
   ;;
 *)
   echo '$FFMPEG_VERSION must be release or version number eg. 5.1.1' >&2
